@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MasterVision</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <div class="card">
+    <h2>MasterVision</h2>
+    <p class="hint">Ingresá la clave del sitio para usar el chat y la memoria. Se guarda solo en este navegador.</p>
+    <div class="row">
+      <input type="password" id="siteKeyInput" placeholder="Clave del sitio" />
+      <button class="btn" id="siteKeySave">Entrar</button>
+    </div>
+    <p class="hint">¿No configuraste el backend todavía? Podés cerrar esto e igual usar Proyecciones y Teoría de Juegos, que corren en el navegador sin backend.</p>
+    <button class="btn secondary" id="gateSkip">Usar sin chat</button>
+  </div>
+</div>
+
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>MasterVision</h1>
+      <p>Análisis directo: negocio, proyecciones y teoría de juegos.</p>
+    </div>
+    <span class="badge" id="connStatus">backend no configurado</span>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="chat" class="active">Chat</button>
+    <button data-tab="proyecciones">Proyecciones</button>
+    <button data-tab="juegos">Teoría de juegos</button>
+    <button data-tab="memoria">Memoria</button>
+    <button data-tab="config">Configuración</button>
+  </nav>
+
+  <!-- CHAT -->
+  <section id="panel-chat" class="panel active">
+    <div class="card">
+      <h2>Preguntas puntuales</h2>
+      <div class="row" style="margin-bottom:12px;">
+        <div>
+          <label for="scopeSelect">Contexto</label>
+          <select id="scopeSelect">
+            <option value="business">Negocio</option>
+            <option value="family">Familia (notas manuales)</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+      </div>
+      <div id="chatLog" class="chat-log"></div>
+      <div class="row">
+        <textarea id="chatInput" placeholder="Escribí tu pregunta..." style="flex:1;"></textarea>
+        <button class="btn" id="chatSend">Enviar</button>
+      </div>
+      <p class="hint">El modelo no diagnostica personas reales ni inventa credenciales. Con menores, solo sugiere preguntas para que se las hagas vos directamente.</p>
+    </div>
+  </section>
+
+  <!-- PROYECCIONES -->
+  <section id="panel-proyecciones" class="panel">
+    <div class="card">
+      <h2>Proyección de una serie (regresión lineal simple)</h2>
+      <label for="seriesInput">Valores históricos, separados por coma (ej: 100,120,115,140,160)</label>
+      <div class="row">
+        <input type="text" id="seriesInput" style="flex:1;" placeholder="100,120,115,140,160" />
+        <input type="number" id="seriesPeriods" value="3" min="1" max="24" style="width:80px;" title="Períodos a proyectar" />
+        <button class="btn" id="seriesRun">Proyectar</button>
+      </div>
+      <div class="stat-tiles" id="seriesStats"></div>
+      <canvas id="seriesChart" height="90"></canvas>
+      <p class="hint">Proyección por tendencia lineal (mínimos cuadrados). Es una extrapolación estadística simple, no una predicción garantizada — sirve para ver hacia dónde apunta la tendencia actual, no para tomarla como certeza.</p>
+    </div>
+  </section>
+
+  <!-- TEORIA DE JUEGOS -->
+  <section id="panel-juegos" class="panel">
+    <div class="card">
+      <h2>Equilibrio de Nash (estrategias puras, 2 jugadores)</h2>
+      <div class="row" style="margin-bottom:10px;">
+        <div>
+          <label for="presetSelect">Preset</label>
+          <select id="presetSelect">
+            <option value="custom">Personalizado</option>
+            <option value="prisoner">Dilema del prisionero</option>
+            <option value="stag">Caza del ciervo</option>
+            <option value="chicken">Halcón-Paloma (Gallina)</option>
+            <option value="battle">Batalla de los sexos</option>
+          </select>
+        </div>
+        <div>
+          <label for="rowsInput">Estrategias jugador Fila</label>
+          <input type="number" id="rowsInput" value="2" min="2" max="4" style="width:70px;" />
+        </div>
+        <div>
+          <label for="colsInput">Estrategias jugador Columna</label>
+          <input type="number" id="colsInput" value="2" min="2" max="4" style="width:70px;" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button class="btn secondary" id="buildMatrix">Generar matriz</button>
+        </div>
+      </div>
+      <div id="matrixHost"></div>
+      <button class="btn" id="calcNash">Calcular equilibrios</button>
+      <div id="nashResult" style="margin-top:10px;"></div>
+      <p class="hint">Cada celda tiene el par (pago Fila, pago Columna). Un equilibrio de Nash en estrategias puras es una celda donde ningún jugador mejora cambiando su estrategia solo, dada la del otro.</p>
+    </div>
+  </section>
+
+  <!-- MEMORIA -->
+  <section id="panel-memoria" class="panel">
+    <div class="card">
+      <h2>Memoria guardada</h2>
+      <div class="row" style="margin-bottom:10px;">
+        <select id="memScope">
+          <option value="business">Negocio</option>
+          <option value="family">Familia</option>
+          <option value="general">General</option>
+        </select>
+        <button class="btn secondary" id="memLoad">Cargar</button>
+      </div>
+      <div id="memList"></div>
+      <h2 style="margin-top:18px;">Agregar nota manual de familia</h2>
+      <p class="hint">Esto es solo para notas que VOS cargás a mano — nunca datos recolectados automáticamente de los chicos.</p>
+      <div class="row">
+        <textarea id="familyNoteInput" style="flex:1;" placeholder="Ej: Hur mencionó que le cuesta el cambio de colegio..."></textarea>
+        <button class="btn" id="familyNoteSave">Guardar nota</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIG -->
+  <section id="panel-config" class="panel">
+    <div class="card">
+      <h2>Configuración</h2>
+      <label for="workerUrlInput">URL del backend (Cloudflare Worker)</label>
+      <div class="row">
+        <input type="text" id="workerUrlInput" style="flex:1;" placeholder="https://mastervision-worker.tuusuario.workers.dev" />
+        <button class="btn secondary" id="workerUrlSave">Guardar</button>
+      </div>
+      <p class="hint">Ver README del repo para desplegar el worker. Sin esta URL, el chat y la memoria no funcionan.</p>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn danger" id="clearSiteKey">Olvidar clave del sitio</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
