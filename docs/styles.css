@@ -1,80 +1,96 @@
+/* Marca Mejora Continua — ver manual en .claude/skills/mejora-continua-brand.
+   Tipografía: Bw Modelica es de pago y no se embebe en este repo público;
+   se usa Inter como reemplazo temporal (según indica el propio manual para
+   entornos sin acceso al archivo de fuente). League Spartan sí es open
+   source y se carga directo por CDN. */
+
 :root {
   color-scheme: light;
-  --surface-1: #fcfcfb;
-  --page: #f9f9f7;
-  --text-primary: #0b0b0b;
-  --text-secondary: #52514e;
-  --text-muted: #898781;
-  --grid: #e1e0d9;
-  --baseline: #c3c2b7;
-  --border: rgba(11, 11, 11, 0.10);
 
-  --series-1: #2a78d6; /* blue */
-  --series-2: #008300; /* green */
-  --series-3: #e87ba4; /* magenta */
-  --series-4: #eda100; /* yellow */
-  --series-5: #1baf7a; /* aqua */
-  --series-6: #eb6834; /* orange */
-  --series-7: #4a3aa7; /* violet */
-  --series-8: #e34948; /* red */
+  /* Marca */
+  --azul: #1a3d84;
+  --rojo: #e1061e;
+  --amarillo: #f7cc13;
+  --tinta: #2b2b2b;
+  --gris: #6b7280;
 
-  --good: #0ca30c;
-  --warning: #fab219;
-  --serious: #ec835a;
-  --critical: #d03b3b;
+  --surface-1: #ffffff;
+  --page: #fafafa;
+  --text-primary: var(--tinta);
+  --text-secondary: var(--gris);
+  --text-muted: #9aa0aa;
+  --grid: #e7e8eb;
+  --baseline: #d5d7db;
+  --border: rgba(43, 43, 43, 0.12);
+
+  --brand-primary: var(--azul);
+  --brand-accent-1: var(--rojo);
+  --brand-accent-2: var(--amarillo);
+
+  /* Series de datos: un único hilo (azul), sin paleta categórica —
+     los gráficos de este panel son de una sola serie. */
+  --series-1: var(--azul);
+
+  --good: var(--azul);
+  --warning: var(--amarillo);
+  --critical: var(--rojo);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --surface-1: #1a1a19;
-    --page: #0d0d0d;
+    --surface-1: #232323;
+    --page: #1c1c1c;
     --text-primary: #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted: #898781;
-    --grid: #2c2c2a;
-    --baseline: #383835;
-    --border: rgba(255, 255, 255, 0.10);
+    --text-secondary: #c7c9cd;
+    --text-muted: #9aa0aa;
+    --grid: #38383a;
+    --baseline: #454547;
+    --border: rgba(255, 255, 255, 0.12);
 
-    --series-1: #3987e5;
-    --series-2: #008300;
-    --series-3: #d55181;
-    --series-4: #c98500;
-    --series-5: #199e70;
-    --series-6: #d95926;
-    --series-7: #9085e9;
-    --series-8: #e66767;
+    /* El manual de marca es "blanco dominante" y no define modo oscuro;
+       esta es una adaptación práctica de accesibilidad, no parte del manual. */
+    --azul: #6f92d6;
+    --rojo: #ef5a6c;
+    --amarillo: #f7cc13;
+    --series-1: var(--azul);
+    --good: var(--azul);
+    --warning: var(--amarillo);
+    --critical: var(--rojo);
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface-1: #1a1a19;
-  --page: #0d0d0d;
+  --surface-1: #232323;
+  --page: #1c1c1c;
   --text-primary: #ffffff;
-  --text-secondary: #c3c2b7;
-  --text-muted: #898781;
-  --grid: #2c2c2a;
-  --baseline: #383835;
-  --border: rgba(255, 255, 255, 0.10);
+  --text-secondary: #c7c9cd;
+  --text-muted: #9aa0aa;
+  --grid: #38383a;
+  --baseline: #454547;
+  --border: rgba(255, 255, 255, 0.12);
 
-  --series-1: #3987e5;
-  --series-2: #008300;
-  --series-3: #d55181;
-  --series-4: #c98500;
-  --series-5: #199e70;
-  --series-6: #d95926;
-  --series-7: #9085e9;
-  --series-8: #e66767;
+  --azul: #6f92d6;
+  --rojo: #ef5a6c;
+  --amarillo: #f7cc13;
+  --series-1: var(--azul);
+  --good: var(--azul);
+  --warning: var(--amarillo);
+  --critical: var(--rojo);
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--page);
   color: var(--text-primary);
+}
+
+h1, h2, nav.tabs button, button.btn {
+  font-family: "League Spartan", "Inter", system-ui, sans-serif;
 }
 
 .app {
@@ -85,19 +101,39 @@ body {
 
 header.top {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   margin-bottom: 20px;
 }
 
+header.top .brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+header.top img.logo {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+header.top .brand-lockup .divider {
+  width: 1px;
+  height: 28px;
+  background: var(--grid);
+}
+
 header.top h1 {
-  font-size: 20px;
+  font-size: 19px;
+  font-weight: 600;
   margin: 0;
+  color: var(--azul);
 }
 
 header.top p {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   color: var(--text-secondary);
   font-size: 13px;
 }
@@ -115,14 +151,15 @@ nav.tabs button {
   border: none;
   padding: 10px 14px;
   font-size: 14px;
+  font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
   border-bottom: 2px solid transparent;
 }
 
 nav.tabs button.active {
-  color: var(--text-primary);
-  border-bottom-color: var(--series-1);
+  color: var(--azul);
+  border-bottom-color: var(--amarillo);
   font-weight: 600;
 }
 
@@ -139,7 +176,9 @@ nav.tabs button.active {
 
 .card h2 {
   font-size: 15px;
+  font-weight: 600;
   margin: 0 0 12px;
+  color: var(--azul);
 }
 
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -164,25 +203,26 @@ input[type="text"], input[type="number"], input[type="password"], select, textar
 textarea { width: 100%; resize: vertical; min-height: 60px; }
 
 button.btn {
-  background: var(--series-1);
+  background: var(--azul);
   color: #fff;
   border: none;
   border-radius: 6px;
   padding: 9px 16px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
 }
 
 button.btn.secondary {
   background: transparent;
-  color: var(--series-1);
-  border: 1px solid var(--series-1);
+  color: var(--azul);
+  border: 1px solid var(--azul);
 }
 
 button.btn.danger {
   background: transparent;
-  color: var(--critical);
-  border: 1px solid var(--critical);
+  color: var(--rojo);
+  border: 1px solid var(--rojo);
   padding: 4px 10px;
   font-size: 12px;
 }
@@ -210,7 +250,7 @@ button.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .msg.user {
   align-self: flex-end;
-  background: var(--series-1);
+  background: var(--azul);
   color: #fff;
 }
 
@@ -241,6 +281,7 @@ button.btn:disabled { opacity: 0.5; cursor: not-allowed; }
   border: 1px solid var(--grid);
   border-radius: 8px;
   padding: 12px;
+  border-top: 3px solid var(--amarillo);
 }
 
 .stat-tile .label { font-size: 11px; color: var(--text-muted); }
@@ -248,6 +289,7 @@ button.btn:disabled { opacity: 0.5; cursor: not-allowed; }
   font-size: 22px;
   font-weight: 600;
   font-variant-numeric: normal;
+  color: var(--azul);
 }
 
 .legend {
@@ -281,7 +323,7 @@ table.matrix th, table.matrix td {
 }
 
 table.matrix td.ne {
-  background: color-mix(in srgb, var(--good) 18%, var(--surface-1));
+  background: color-mix(in srgb, var(--amarillo) 30%, var(--surface-1));
   font-weight: 600;
 }
 
