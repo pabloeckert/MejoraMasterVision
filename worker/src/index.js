@@ -62,41 +62,14 @@ function buildContextText(entries) {
 }
 
 async function handleChat(request, env) {
-  if (!env.ANTHROPIC_API_KEY) {
-    return json({ error: "Falta configurar ANTHROPIC_API_KEY en el worker (wrangler secret put ANTHROPIC_API_KEY)." }, 500, env);
-  }
   const body = await request.json().catch(() => null);
   if (!body || typeof body.message !== "string" || !body.message.trim()) {
     return json({ error: "Falta 'message'." }, 400, env);
   }
   const scope = SCOPES.has(body.scope) ? body.scope : "general";
   const memory = await loadMemory(env, scope);
-  const contextText = buildContextText(memory);
 
-  const systemPrompt = `${SYSTEM_PROMPT}\n\nContexto guardado del espacio "${scope}" (memoria de conversaciones y notas previas):\n${contextText}`;
-
-  const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": env.ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: env.MODEL || "claude-sonnet-5",
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: "user", content: body.message }],
-    }),
-  });
-
-  if (!anthropicRes.ok) {
-    const errText = await anthropicRes.text().catch(() => "");
-    return json({ error: `Error de Anthropic (${anthropicRes.status}): ${errText}` }, 502, env);
-  }
-
-  const data = await anthropicRes.json();
-  const reply = (data.content && data.content[0] && data.content[0].text) || "(sin respuesta)";
+  const reply = "Servicio de chat: Proveedor externo purgado del ecosistema. Pendiente de conexión con el motor unificado de MejoraSuite.";
 
   memory.push({ ts: Date.now(), role: "user", content: body.message });
   memory.push({ ts: Date.now(), role: "assistant", content: reply });

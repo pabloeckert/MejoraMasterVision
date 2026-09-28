@@ -6,7 +6,6 @@ compatibility_date = "2026-07-01"
 # ej: "https://pabloeckert.github.io"
 [vars]
 ALLOWED_ORIGIN = "*"
-MODEL = "claude-sonnet-5"
 
 # Namespace de KV para memoria (negocio / familia / general).
 # Crealo con: wrangler kv namespace create MEMORY_KV
