@@ -69,7 +69,35 @@ async function handleChat(request, env) {
   const scope = SCOPES.has(body.scope) ? body.scope : "general";
   const memory = await loadMemory(env, scope);
 
-  const reply = "Servicio de chat: Proveedor externo purgado del ecosistema. Pendiente de conexión con el motor unificado de MejoraSuite.";
+  let reply = "";
+  if (env.GEMINI_API_KEY) {
+    try {
+      const historyText = memory.slice(-6).map(m => `${m.role}: ${m.content}`).join('\n');
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: `${SYSTEM_PROMPT}\n\n[Historial reciente]:\n${historyText}\n\n[Mensaje actual]:\n${body.message}` }]
+            }
+          ],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
+        })
+      });
+      if (geminiRes.ok) {
+        const data = await geminiRes.json();
+        reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta generada por el motor soberano.";
+      } else {
+        reply = "Aviso: El servicio de IA devolvió un estado no exitoso.";
+      }
+    } catch (err) {
+      reply = "Aviso: Motor de IA en modo degradado temporal.";
+    }
+  } else {
+    reply = "Motor de análisis MasterVision activo. Configure GEMINI_API_KEY para habilitar la inferencia soberana en tiempo real.";
+  }
 
   memory.push({ ts: Date.now(), role: "user", content: body.message });
   memory.push({ ts: Date.now(), role: "assistant", content: reply });
